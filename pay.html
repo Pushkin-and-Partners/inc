@@ -359,13 +359,23 @@
   .pay-list{ display:grid; grid-template-columns:1fr; gap:1px; background:var(--line);
              border:1px solid var(--line); margin-top:clamp(28px,4vw,40px); }
   @media(min-width:760px){ .pay-list{ grid-template-columns:1fr 1fr; } }
-  .pay-item{ background:var(--paper); padding:clamp(22px,3vw,30px); display:flex; flex-direction:column; }
-  .pay-item h3{ font-size:17px; font-weight:500; margin:0 0 5px; }
-  .pay-note{ font-size:13px; color:var(--ink-faint); margin:0 0 16px; }
+  .pay-item{ background:var(--paper); padding:clamp(24px,3vw,32px);
+             display:grid; grid-template-columns:1fr auto; column-gap:clamp(20px,3vw,32px);
+             align-items:center; }
+  .pay-item h3{ grid-column:1; grid-row:1; }
+  .pay-item .pay-note{ grid-column:1; grid-row:2; }
+  .pay-item .pay-value{ grid-column:1; grid-row:3; }
+  .pay-item .pay-actions{ grid-column:2; grid-row:1 / -1; }
+  @media(max-width:600px){
+    .pay-item{ grid-template-columns:1fr; }
+    .pay-item .pay-actions{ grid-column:1; grid-row:auto; align-items:flex-start; margin-top:4px; }
+  }
+  .pay-item h3{ font-size:17px; font-weight:500; margin:0 0 6px; }
+  .pay-note{ font-size:13px; color:var(--ink-faint); margin:0 0 14px; max-width:34ch; }
   .pay-value{ font-family:'Instrument Serif',serif; font-size:clamp(26px,3.2vw,34px);
               color:var(--ink); letter-spacing:0.01em; word-break:break-all;
-              margin:0 0 18px; line-height:1.22; }
-  .pay-actions{ margin-top:auto; display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+              margin:0; line-height:1.22; }
+  .pay-actions{ display:flex; flex-direction:column; align-items:flex-end; gap:8px; }
   .pay-btn{ background:transparent; color:var(--ink); border:1px solid var(--ink);
             padding:10px 22px; font-size:14px; font-weight:500; font-family:inherit;
             border-radius:999px; cursor:pointer; transition:background .2s ease, color .2s ease; }
@@ -448,7 +458,7 @@
         <p class="pay-note">For payments in dollars. Opens in a new tab.</p>
         <p class="pay-value">payoneer.com</p>
         <div class="pay-actions">
-          <a class="pay-btn" href="https://link.payoneer.com/Token?t=7664A24D9FAD4F06970C127F2A60FE7A&amp;src=mobile" target="_blank" rel="noopener">Open</a>
+          <a class="pay-btn" href="https://link.payoneer.com/Token?t=DF4432EA9C0C42C486D0BD8FA7B34A75&amp;src=mobile" target="_blank" rel="noopener">Open</a>
         </div>
       </div>
 
