@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invest &mdash; PUSHKIN &amp; PARTNERS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ============ ТОКЕНЫ ============ */
+  :root{
+    --yellow: #FCF000;
+    --yellow-deep: #E3D800;
+    --yellow-ink: #6E6600;
+    --cream: #F4EADE;
+    --cream-warm: #E7D7C4;
+    --paper: #FBF6EF;
+    --ink: #171C0E;
+    --ink-soft: #665B47;
+    --ink-faint: #9E917E;
+    --line: rgba(23,28,14,0.14);
+    --line-dark: rgba(23,28,14,0.24);
+    --radius: 2px;
+    --max: 1180px;
+    --pad: clamp(20px, 6vw, 64px);
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
+  }
+
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Inter', -apple-system, sans-serif;
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  h1,h2,h3{
+    font-family:'Instrument Serif', Georgia, serif;
+    margin:0;
+    font-weight:400;
+    letter-spacing:-0.015em;
+  }
+
+  a{ color:inherit; }
+  img{ max-width:100%; display:block; }
+  button{ font-family:inherit; cursor:pointer; }
+
+  .wrap{ max-width:var(--max); margin:0 auto; padding-left:var(--pad); padding-right:var(--pad); }
+  section{ padding-top:clamp(56px,9vw,120px); padding-bottom:clamp(56px,9vw,120px); }
+
+  .eyebrow{ font-size:13px; color:var(--ink-faint); margin-bottom:14px; }
+
+  .section-head{ max-width:660px; margin:0 auto clamp(32px,5vw,56px); text-align:center; }
+  .section-head h2{ font-size:clamp(34px,5.4vw,58px); line-height:1.02; }
+  .section-head p{ color:var(--ink-soft); font-size:17px; margin:18px auto 0; max-width:520px; }
+
+  /* ============ НАВИГАЦИЯ ============ */
+  .nav{
+    position:fixed; top:0; left:0; right:0; z-index:40;
+    background:transparent;
+    border-bottom:1px solid transparent;
+    opacity:0; pointer-events:none;
+    transition:background 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease;
+  }
+  .nav .wrap{ display:flex; align-items:center; justify-content:space-between; height:68px; }
+  .nav-mark{
+    font-family:'Instrument Serif',serif; font-size:20px; letter-spacing:-0.01em;
+    text-decoration:none; color:var(--yellow);
+    text-shadow:0 1px 12px rgba(0,0,0,0.55);
+    transition:color 0.3s ease, text-shadow 0.3s ease;
+  }
+  .nav-links{ display:none; gap:28px; font-size:14px; }
+  .nav-links a{ text-decoration:none; color:var(--yellow); opacity:0.85; text-shadow:0 1px 10px rgba(0,0,0,0.5); transition:color 0.3s ease, opacity 0.3s ease; }
+  .nav-links a:hover{ opacity:1; }
+  .nav-cta{
+    background:transparent; color:var(--yellow); border:1px solid var(--yellow); padding:10px 20px;
+    font-size:14px; font-weight:500; border-radius:999px;
+    text-decoration:none; display:inline-block;
+    text-shadow:0 1px 10px rgba(0,0,0,0.45);
+    transition:background 0.2s ease, color 0.2s ease, text-shadow 0.2s ease;
+  }
+  .nav-cta:hover{ background:var(--yellow); color:var(--ink); text-shadow:none; }
+  /* после прокрутки хиро кнопка заливается — на кремовом обводка теряется */
+  .nav--solid .nav-cta{ background:var(--yellow); color:var(--ink); text-shadow:none; }
+  .nav--solid .nav-cta:hover{ background:transparent; color:var(--ink); }
+
+  /* состояние после прокрутки хиро */
+  .nav--solid{
+    opacity:1; pointer-events:auto;
+    background:rgba(244,234,222,0.94);
+    backdrop-filter:blur(8px);
+    border-bottom-color:var(--line);
+  }
+  .nav--solid .nav-mark{ color:var(--ink); text-shadow:none; }
+  .nav--solid .nav-links a{ color:var(--ink-soft); opacity:1; text-shadow:none; }
+  .nav--solid .nav-links a:hover{ color:var(--ink); }
+
+  @media(min-width:820px){ .nav-links{ display:flex; } }
+
+  /* ============ ССЫЛКА-ДЕЙСТВИЕ ============ */
+  .link-cta{
+    display:inline-flex; align-items:center; gap:9px;
+    font-size:15px; font-weight:500; text-decoration:none;
+    color:var(--ink); border-bottom:1px solid var(--yellow);
+    padding-bottom:4px; line-height:1.3;
+    transition:border-color 0.25s ease, color 0.25s ease;
+  }
+  .link-cta::after{ content:"\2192"; transition:transform 0.25s ease; }
+  .link-cta:hover{ border-color:var(--ink); }
+  .link-cta:hover::after{ transform:translateX(4px); }
+
+  .link-cta--dark{ color:var(--cream); }
+  .link-cta--dark:hover{ border-color:var(--cream); }
+  .link-cta--photo{ color:var(--yellow); text-shadow:0 1px 10px rgba(0,0,0,0.5); }
+  .link-cta--photo:hover{ border-color:var(--cream); color:var(--cream); }
+
+  /* ============ ХИРО ============ */
+  .hero{
+    position:relative;
+    background:var(--ink) url('hero-desktop.jpg') top center / min(100%, 1344px) auto no-repeat;
+    color:var(--cream);
+    overflow:hidden;
+    padding-top:min(66.67vw, 896px);   /* высота = пропорции десктопного кадра */
+    padding-bottom:clamp(30px,5vw,52px);
+  }
+  .hero::before{
+    content:"";
+    position:absolute; top:0; left:0; right:0;
+    height:min(66.67vw, 896px);
+    background:linear-gradient(to bottom,
+      rgba(23,28,14,0) 70%,
+      rgba(23,28,14,0.45) 88%,
+      var(--ink) 100%);
+    pointer-events:none;
+  }
+  .hero .wrap{ position:relative; z-index:1; width:100%; }
+  .hero-inner{ position:relative; }
+
+  .hero-actions{
+    margin-top:0; display:flex; gap:22px; flex-wrap:wrap;
+    align-items:center; justify-content:center;
+    opacity:0; animation: riseIn 0.8s 0.3s ease forwards;
+  }
+
+  @keyframes riseIn{ from{ opacity:0; transform:translateY(16px);} to{ opacity:1; transform:translateY(0);} }
+
+
+  /* ============ ЦИФРЫ КОМПАНИИ ============ */
+  .specs-grid{
+    display:grid; grid-template-columns:repeat(2,1fr);
+    gap:1px; background:var(--line); border:1px solid var(--line);
+  }
+  @media(min-width:700px){ .specs-grid{ grid-template-columns:repeat(3,1fr); } }
+  @media(min-width:1000px){ .specs-grid{ grid-template-columns:repeat(4,1fr); } }
+  .spec{ background:var(--paper); padding:30px 22px; text-align:center; }
+  .spec-num{
+    font-family:'Instrument Serif',serif; font-size:clamp(32px,3.8vw,44px);
+    line-height:1; letter-spacing:-0.02em; margin-bottom:12px;
+  }
+  .spec-label{ font-size:13.5px; color:var(--ink-soft); }
+
+  @media(max-width:640px){
+    .hero{ padding-bottom:34px; }
+    .hero-actions{ gap:18px; }
+    .hero .link-cta{ font-size:18px; padding-bottom:6px; }
+    .hero .social-proof-text{ font-size:16px; }
+    .hero .avatar-stack span{ width:44px; height:44px; }
+  }
+
+
+  /* ============ ВЕРТИКАЛЬНЫЙ КАДР ДЛЯ ТЕЛЕФОНА ============ */
+  @media(max-width:640px){
+    .hero{
+      background-image:url('hero-mobile.jpg');
+      background-size:100% auto;
+      padding-top:138.1vw;              /* пропорции вертикального кадра */
+    }
+    .hero::before{ height:138.1vw; }
+  }
+
+  /* ============ УСЛУГИ ============ */
+  .services-grid{ display:grid; grid-template-columns:1fr; }
+  @media(min-width:760px){ .services-grid{ grid-template-columns:repeat(2,1fr); } }
+  .service{ padding:28px 0; border-top:1px solid var(--line); display:grid; grid-template-columns:52px 1fr; gap:18px; }
+  .services-grid > .service:nth-child(odd){ padding-right:32px; }
+  @media(min-width:760px){ .services-grid > .service:nth-child(odd){ border-right:1px solid var(--line); } }
+  .service-code{ font-family:'Instrument Serif',serif; font-size:18px; color:var(--yellow-ink); padding-top:2px; }
+  .service h3{ font-size:26px; margin-bottom:8px; }
+  .service p{ color:var(--ink-soft); font-size:15px; margin:0; }
+
+  /* ============ КОМПАНИЯ + КАПИТАЛ ============ */
+  .company{ background:var(--cream-warm); }
+  .capital-wrap{ max-width:640px; margin:0 auto; }
+
+  .capital-card{
+    background:var(--yellow); border:1px solid var(--yellow);
+    padding:clamp(28px,4vw,44px); text-align:center;
+  }
+  .capital-card h3{ font-size:26px; }
+  .cap-head{
+    display:flex; flex-direction:column; align-items:center;
+    gap:22px; margin-bottom:32px;
+  }
+  .capital-card .cap-sub{ color:rgba(23,28,14,0.62); font-size:13.5px; margin-top:8px; }
+  .cap-numbers{ display:flex; align-items:baseline; justify-content:center; gap:12px; margin-bottom:18px; flex-wrap:wrap; }
+  .cap-current{ font-family:'Instrument Serif',serif; font-size:clamp(40px,5.6vw,62px); letter-spacing:-0.02em; line-height:1; }
+  .cap-target{ color:rgba(23,28,14,0.62); font-size:15px; }
+  .cap-track{ height:8px; background:rgba(23,28,14,0.14); border:none; overflow:hidden; margin-bottom:22px; }
+  .cap-fill{ height:100%; width:0%; background:var(--ink); transition:width 1.4s cubic-bezier(.2,.8,.2,1); }
+  .cap-meta{ display:flex; justify-content:center; gap:36px; flex-wrap:wrap; font-size:13.5px; color:rgba(23,28,14,0.7); padding-top:20px; border-top:1px solid rgba(23,28,14,0.18); align-items:baseline; }
+  .cap-cta{ flex-shrink:0; }
+  .capital-card .link-cta{ color:var(--ink); border-bottom-color:var(--ink); }
+  .capital-card .link-cta:hover{ border-bottom-color:rgba(23,28,14,0.35); }
+  .cap-meta strong{ font-family:'Instrument Serif',serif; color:var(--ink); font-weight:400; font-size:18px; }
+
+  /* ============ КОМАНДА ============ */
+  .team-track{
+    display:flex; gap:1px; background:var(--line); border:1px solid var(--line);
+    overflow-x:auto; scroll-snap-type:x mandatory; scroll-behavior:smooth;
+    scrollbar-width:none; -ms-overflow-style:none;
+  }
+  .team-track::-webkit-scrollbar{ display:none; }
+  .team-track .employee{ flex:0 0 76vw; max-width:320px; scroll-snap-align:start; }
+  @media(min-width:640px){ .team-track .employee{ flex:0 0 300px; } }
+  .carousel-nav{ display:flex; gap:10px; margin-top:22px; }
+  .carousel-nav button{
+    width:46px; height:46px; border:1px solid var(--line); background:var(--paper);
+    color:var(--ink); border-radius:999px; font-size:17px; line-height:1;
+    display:flex; align-items:center; justify-content:center;
+    transition:background 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+  }
+  .carousel-nav button:hover:not(:disabled){ background:transparent; border-color:var(--yellow); }
+  .carousel-nav button:disabled{ opacity:0.35; cursor:default; }
+  .employee{ background:var(--paper); padding:26px; transition:background 0.25s ease; }
+  .employee:hover{ background:var(--cream); }
+  .employee-photo{
+    width:100%; aspect-ratio:1/1; background:var(--cream-warm);
+    display:flex; align-items:center; justify-content:center; margin-bottom:16px;
+    font-family:'Instrument Serif',serif; font-size:36px; color:var(--ink-faint);
+    overflow:hidden;
+  }
+  .employee-photo img{ width:100%; height:100%; object-fit:cover; object-position:center 22%; display:block; }
+  .employee-name{ font-size:16px; font-weight:500; }
+  .employee-role{ font-size:13.5px; color:var(--yellow-ink); margin-top:4px; }
+  .employee-duties{ list-style:none; margin:14px 0 0; padding:0; }
+  .employee-duties li{
+    font-size:13px; color:var(--ink-soft); line-height:1.55;
+    padding-left:15px; position:relative;
+  }
+  .employee-duties li::before{ content:"—"; position:absolute; left:0; color:var(--ink-faint); }
+  .employee-meta{ margin-top:14px; padding-top:14px; border-top:1px solid var(--line); font-size:12px; color:var(--ink-faint); display:flex; justify-content:space-between; }
+  .employee-open{ border:1px dashed var(--line); background:transparent; }
+  .employee-open .employee-photo{ background:transparent; border:1px dashed var(--ink-faint); color:var(--ink-faint); font-size:26px; }
+
+  /* ============ JOIN ============ */
+
+  .social-proof{ display:flex; align-items:center; gap:14px; margin-top:24px; flex-wrap:wrap; }
+  .avatar-stack{ display:flex; }
+  .avatar-stack span{
+    width:40px; height:40px; border-radius:50%;
+    background:var(--yellow); color:var(--ink);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Instrument Serif',serif; font-size:16px; line-height:1;
+    border:2px solid var(--ink); margin-left:-12px; flex-shrink:0; overflow:hidden;
+  }
+  .avatar-stack span img{ width:100%; height:100%; object-fit:cover; object-position:center 18%; display:block; }
+  .avatar-stack span:first-child{ margin-left:0; }
+  .social-proof-text{ font-size:15px; color:rgba(244,234,222,0.82); }
+
+  /* вариант для светлого салатового фона в хиро */
+  .social-proof--hero{ margin-top:0; }
+  .social-proof--hero .avatar-stack span{ background:var(--yellow); color:var(--ink); border-color:rgba(23,28,14,0.75); }
+  .social-proof--hero .social-proof-text{ color:var(--yellow); text-shadow:0 1px 10px rgba(0,0,0,0.5); }
+
+  /* ============ ОТЗЫВЫ ============ */
+  .testimonials{ background:var(--ink); color:var(--cream); }
+  .testimonials h2, .testimonials h3{ color:var(--cream); }
+  .testimonials .eyebrow{ color:rgba(244,234,222,0.5); }
+  .testimonials .section-head p{ color:rgba(244,234,222,0.6); }
+  .testimonials-grid{ display:grid; grid-template-columns:1fr; gap:1px; background:rgba(244,234,222,0.16); border:1px solid rgba(244,234,222,0.16); }
+  @media(min-width:760px){ .testimonials-grid{ grid-template-columns:1fr 1fr; } }
+  .testimonial{ background:var(--ink); padding:clamp(24px,3vw,34px); }
+  .testimonial p.quote{ font-family:'Instrument Serif',serif; font-size:24px; line-height:1.3; margin:0 0 24px; }
+  .testimonial-who{ display:flex; align-items:center; gap:12px; }
+  .testimonial-avatar{ width:38px; height:38px; background:rgba(244,234,222,0.14); color:var(--cream); display:flex; align-items:center; justify-content:center; font-size:16px; font-family:'Instrument Serif',serif; flex-shrink:0; overflow:hidden; }
+  .testimonial-avatar img{ width:100%; height:100%; object-fit:cover; object-position:center 18%; display:block; }
+  .testimonial-name{ font-size:14.5px; font-weight:500; }
+  .testimonial-role{ font-size:12.5px; color:rgba(244,234,222,0.55); }
+  .leave-testimonial{ margin-top:28px; font-size:14.5px; }
+  .leave-testimonial a{ color:var(--yellow-ink); text-decoration:none; border-bottom:1px solid var(--yellow); }
+
+  /* ============ ФУТЕР ============ */
+  footer{ background:var(--ink); color:var(--cream); padding-top:clamp(44px,6vw,64px); padding-bottom:0; }
+  .footer-top{ display:grid; grid-template-columns:1fr; gap:32px; padding-bottom:32px; }
+  @media(min-width:760px){ .footer-top{ grid-template-columns:1.3fr repeat(3,1fr); } }
+  .footer-mark{ font-family:'Instrument Serif',serif; font-size:20px; margin-bottom:10px; letter-spacing:-0.01em; color:var(--cream); }
+  .footer-top p{ color:rgba(244,234,222,0.55); font-size:13.5px; max-width:280px; }
+  .footer-col h4{ font-size:12.5px; color:rgba(244,234,222,0.45); margin:0 0 14px; font-weight:500; }
+  .footer-col ul{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
+  .footer-col a{ text-decoration:none; font-size:14px; color:rgba(244,234,222,0.75); }
+  .footer-col a:hover{ color:var(--yellow); }
+  .footer-bottom{
+    border-top:1px solid rgba(244,234,222,0.16); padding-top:20px; padding-bottom:clamp(28px,4vw,44px);
+    display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px;
+    font-size:12.5px; color:rgba(244,234,222,0.5);
+  }
+
+  /* ============ ЛОГОТИП НА ВСЮ ШИРИНУ ============ */
+  .footer-logo{
+    width:100%; padding:0 clamp(12px,3vw,40px) clamp(20px,3vw,36px);
+    color:var(--yellow); line-height:0;
+  }
+  .footer-logo svg{ width:100%; height:auto; display:block; }
+
+  /* ============ ФОРМА ОТЗЫВА ============ */
+  .testimonial-form{ margin-top:clamp(36px,5vw,52px); border-top:1px solid rgba(244,234,222,0.16); padding-top:clamp(30px,4vw,42px); max-width:640px; }
+  .testimonial-form h3{ font-size:26px; margin-bottom:6px; }
+  .form-intro{ font-size:14.5px; color:rgba(244,234,222,0.6); margin:0 0 26px; }
+  .form-duo{ display:grid; grid-template-columns:1fr; gap:18px; }
+  @media(min-width:620px){ .form-duo{ grid-template-columns:1fr 1fr; } }
+  .form-row{ margin-bottom:18px; }
+  .form-row label{ display:block; font-size:12.5px; color:rgba(244,234,222,0.5); margin-bottom:7px; }
+  .form-row input, .form-row textarea{
+    width:100%; padding:12px 14px; font-family:inherit; font-size:15px; line-height:1.5;
+    background:rgba(244,234,222,0.06); border:1px solid rgba(244,234,222,0.2); border-radius:var(--radius);
+    color:var(--cream); resize:vertical;
+  }
+  .form-row input::placeholder, .form-row textarea::placeholder{ color:rgba(244,234,222,0.35); }
+  .form-row textarea{ min-height:110px; }
+  .form-row input:focus, .form-row textarea:focus{ outline:none; border-color:var(--yellow); }
+  .btn-submit{
+    background:transparent; color:var(--yellow); border:1px solid var(--yellow);
+    padding:13px 32px; font-size:15px; font-weight:500; border-radius:999px;
+    transition:background 0.2s ease, color 0.2s ease;
+  }
+  .btn-submit:hover:not(:disabled){ background:var(--yellow); color:var(--ink); }
+  .btn-submit:disabled{ opacity:0.5; cursor:default; }
+  .form-status{ font-size:13.5px; margin-top:14px; min-height:20px; color:rgba(244,234,222,0.65); }
+
+  /* ============ ПОЯВЛЕНИЕ ПРИ СКРОЛЛЕ ============ */
+  .reveal{ opacity:0; transform:translateY(18px); transition:opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.is-visible{ opacity:1; transform:translateY(0); }
+</style>
+</head>
+<style>
+  .pay-hero{ padding-top:clamp(90px,11vw,140px); padding-bottom:clamp(30px,4vw,44px); }
+  .pay-hero h1{ font-family:'Instrument Serif',serif; font-weight:400; letter-spacing:-0.02em;
+                font-size:clamp(38px,6vw,68px); line-height:1.04; margin:0 0 14px; }
+  .pay-hero p{ max-width:520px; color:var(--ink-soft); font-size:15.5px; margin:0; }
+  .pay-list{ display:grid; grid-template-columns:1fr; gap:1px; background:var(--line);
+             border:1px solid var(--line); margin-top:clamp(28px,4vw,40px); }
+  @media(min-width:760px){ .pay-list{ grid-template-columns:1fr 1fr; } }
+  .pay-item{ background:var(--paper); padding:clamp(22px,3vw,30px); display:flex; flex-direction:column; }
+  .pay-item h3{ font-size:17px; font-weight:500; margin:0 0 5px; }
+  .pay-note{ font-size:13px; color:var(--ink-faint); margin:0 0 16px; }
+  .pay-value{ font-family:'Instrument Serif',serif; font-size:clamp(19px,2.4vw,24px);
+              letter-spacing:0.01em; word-break:break-all; margin:0 0 16px; line-height:1.3; }
+  .pay-actions{ margin-top:auto; display:flex; align-items:center; gap:14px; flex-wrap:wrap; }
+  .pay-btn{ background:transparent; color:var(--ink); border:1px solid var(--ink);
+            padding:10px 22px; font-size:14px; font-weight:500; font-family:inherit;
+            border-radius:999px; cursor:pointer; transition:background .2s ease, color .2s ease; }
+  .pay-btn:hover{ background:var(--ink); color:var(--paper); }
+  .pay-btn--ghost{ border-color:var(--line); color:var(--ink-soft); }
+  .pay-btn--ghost:hover{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
+  .pay-ok{ font-size:13px; color:var(--yellow-ink); opacity:0; transition:opacity .2s ease; }
+  .pay-ok.on{ opacity:1; }
+  .pay-back{ display:inline-block; margin-top:clamp(30px,4vw,44px); font-size:14.5px;
+             color:var(--ink-soft); text-decoration:none; border-bottom:1px solid var(--line); }
+  .pay-back:hover{ color:var(--ink); border-bottom-color:var(--ink); }
+  .capital-card--pay{ margin-top:clamp(28px,4vw,40px); }
+</style>
+
+<body>
+
+<nav class="nav">
+  <div class="wrap">
+    <a href="/" class="nav-mark">Pushkin &amp; Partners</a>
+    <div class="nav-links">
+      <a href="/#services">Services</a>
+      <a href="/#company">Company</a>
+      <a href="/#team">Team</a>
+      <a href="/#testimonials">Testimonials</a>
+    </div>
+    <a class="nav-cta" href="/">Back to site</a>
+  </div>
+</nav>
+
+<section class="pay-hero">
+  <div class="wrap">
+    <div class="eyebrow">Investor Relations</div>
+    <h1>Take Your Position</h1>
+    <p>Choose any payment method below. Every contribution is added to the Company Capital
+       and grants the contributor full employee status.</p>
+
+    <div class="capital-wrap capital-card--pay">
+      <div class="capital-card">
+        <div class="cap-numbers">
+          <div class="cap-current" id="cap-current">&#8381;0</div>
+          <div class="cap-target" id="cap-target">of &#8381;500,000 target</div>
+        </div>
+        <div class="cap-track"><div class="cap-fill" id="cap-fill"></div></div>
+      </div>
+    </div>
+
+    <div class="pay-list">
+
+      <div class="pay-item">
+        <h3>T-Bank Collection</h3>
+        <p class="pay-note">Card payment, any bank. Opens in a new tab.</p>
+        <p class="pay-value">tbank.ru</p>
+        <div class="pay-actions">
+          <a class="pay-btn" href="https://www.tbank.ru/cf/3BXQQZX7MJp" target="_blank" rel="noopener">Open</a>
+        </div>
+      </div>
+
+      <div class="pay-item">
+        <h3>SBP &mdash; by phone number</h3>
+        <p class="pay-note">Fast Payments System, T-Bank.</p>
+        <p class="pay-value" id="v-sbp">+7 968 480 3298</p>
+        <div class="pay-actions">
+          <button class="pay-btn" data-copy="v-sbp">Copy number</button>
+          <span class="pay-ok">Copied</span>
+        </div>
+      </div>
+
+      <div class="pay-item">
+        <h3>ACBA card &mdash; Armenia</h3>
+        <p class="pay-note">Local transfer in drams.</p>
+        <p class="pay-value" id="v-acba">4355 0539 2707 8339</p>
+        <div class="pay-actions">
+          <button class="pay-btn" data-copy="v-acba">Copy card</button>
+          <span class="pay-ok">Copied</span>
+        </div>
+      </div>
+
+      <div class="pay-item">
+        <h3>Payoneer &mdash; USD</h3>
+        <p class="pay-note">For payments in dollars. Opens in a new tab.</p>
+        <p class="pay-value">payoneer.com</p>
+        <div class="pay-actions">
+          <a class="pay-btn" href="https://link.payoneer.com/Token?t=7664A24D9FAD4F06970C127F2A60FE7A&amp;src=mobile" target="_blank" rel="noopener">Open</a>
+        </div>
+      </div>
+
+      <div class="pay-item">
+        <h3>USDT &mdash; TRC20</h3>
+        <p class="pay-note">Tron network only. Sending via another network will lose the funds.</p>
+        <p class="pay-value" id="v-usdt">TDAcKtp12CarHR5eB5auYZNTmeT8U88TgS</p>
+        <div class="pay-actions">
+          <button class="pay-btn" data-copy="v-usdt">Copy address</button>
+          <span class="pay-ok">Copied</span>
+        </div>
+      </div>
+
+    </div>
+
+    <a class="pay-back" href="/">&#8592; Back to pushkinandpartners</a>
+  </div>
+</section>
+
+<script>
+(function(){
+  var SUPABASE_URL = 'https://bbkikfhmklmiunsmhfyc.supabase.co';
+  var SUPABASE_KEY = 'sb_publishable_5LLB05h786riEtEDZ_hX7g_I9X_MWqL';
+  var CURRENT = 0, TARGET = 500000;
+
+  document.querySelectorAll('.pay-btn[data-copy]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var el = document.getElementById(btn.getAttribute('data-copy'));
+      if(!el) return;
+      var ok = btn.parentNode.querySelector('.pay-ok');
+      navigator.clipboard.writeText(el.textContent.trim()).then(function(){
+        if(ok){ ok.classList.add('on'); setTimeout(function(){ ok.classList.remove('on'); }, 1800); }
+      }).catch(function(){});
+    });
+  });
+
+  function paint(){
+    var pct = TARGET ? Math.min(100, (CURRENT / TARGET) * 100) : 0;
+    document.getElementById('cap-current').textContent = '\u20BD' + CURRENT.toLocaleString('en-US');
+    document.getElementById('cap-target').textContent = 'of \u20BD' + TARGET.toLocaleString('en-US') + ' target';
+    requestAnimationFrame(function(){ document.getElementById('cap-fill').style.width = pct + '%'; });
+  }
+
+  fetch(SUPABASE_URL + '/rest/v1/settings?select=key,value', {
+    headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY }
+  })
+  .then(function(r){ return r.ok ? r.json() : []; })
+  .then(function(rows){
+    rows.forEach(function(row){
+      var n = parseInt(row.value, 10);
+      if(isNaN(n)) return;
+      if(row.key === 'capital_current') CURRENT = n;
+      if(row.key === 'capital_target')  TARGET  = n;
+    });
+  })
+  .catch(function(){})
+  .then(paint);
+})();
+</script>
+
+</body>
+</html>
