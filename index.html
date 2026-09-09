@@ -429,8 +429,18 @@
         </ul>
         <div class="employee-meta"><span>Employee ID</span><span>003</span></div>
       </div>
+      <div class="employee">
+        <div class="employee-photo"><img src="nastya.jpg" alt="Anastasia Belyakova" loading="lazy"></div>
+        <div class="employee-name">Anastasia Belyakova</div>
+        <div class="employee-role">Head of Relaxation Department (HRD)</div>
+        <ul class="employee-duties">
+          <li>Work/life balance control</li>
+          <li>Workplace sleep infrastructure</li>
+        </ul>
+        <div class="employee-meta"><span>Employee ID</span><span>004</span></div>
+      </div>
       <div class="employee employee-open">
-        <div class="employee-photo">004</div>
+        <div class="employee-photo">005</div>
         <div class="employee-name">Open position</div>
         <div class="employee-role" style="color:var(--ink-faint);">Awaiting a new hire</div>
         <a class="link-cta" style="font-size:13.5px; margin-top:12px;" href="https://www.tbank.ru/cf/3BXQQZX7MJp" target="_blank" rel="noopener">Take Your Position</a>
@@ -788,8 +798,10 @@
      Количество сотрудников считается само по разделу Our Team —
      руками его менять не нужно.
      ========================================================= */
-  var CAPITAL_CURRENT = 13888;   // текущая сумма, ₽
-  var CAPITAL_TARGET  = 500000; // цель, ₽
+  /* Сумма и цель теперь хранятся в базе Supabase, таблица settings.
+     Здесь только запасные значения на случай, если база не ответит. */
+  var CAPITAL_CURRENT = 8888;
+  var CAPITAL_TARGET  = 500000;
 
   var EMPLOYEE_COUNT = document.querySelectorAll('.team-track .employee:not(.employee-open)').length;
   document.getElementById('cap-employees').textContent = EMPLOYEE_COUNT;
@@ -816,6 +828,26 @@
     });
   });
 
+  // капитал подтягивается из базы; при сбое останутся значения выше
+  function loadSettings(){
+    if(!LIVE) return Promise.resolve();
+    return fetch(SUPABASE_URL + '/rest/v1/settings?select=key,value', {
+      headers: { apikey: SUPABASE_KEY, Authorization: 'Bearer ' + SUPABASE_KEY }
+    })
+    .then(function(r){ return r.ok ? r.json() : []; })
+    .then(function(rows){
+      rows.forEach(function(row){
+        var n = parseInt(row.value, 10);
+        if(isNaN(n)) return;
+        if(row.key === 'capital_current') CAPITAL_CURRENT = n;
+        if(row.key === 'capital_target')  CAPITAL_TARGET  = n;
+      });
+      var t = document.querySelector('.cap-target');
+      if(t) t.textContent = 'of \u20BD' + CAPITAL_TARGET.toLocaleString('en-US') + ' target';
+    })
+    .catch(function(){});
+  }
+
   var capEl = document.getElementById('cap-current');
   var fillEl = document.getElementById('cap-fill');
   var capitalAnimated = false;
@@ -834,8 +866,11 @@
     requestAnimationFrame(step);
   }
 
+  var settingsReady = loadSettings();
   var capIo = new IntersectionObserver(function(entries){
-    entries.forEach(function(e){ if(e.isIntersecting){ animateCapital(); capIo.disconnect(); } });
+    entries.forEach(function(e){
+      if(e.isIntersecting){ settingsReady.then(animateCapital); capIo.disconnect(); }
+    });
   }, { threshold: 0.3 });
   capIo.observe(document.getElementById('company'));
 </script>
