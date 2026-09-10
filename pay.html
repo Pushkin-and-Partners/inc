@@ -434,6 +434,16 @@
       </div>
 
       <div class="pay-item">
+        <h3>T-Bank card &mdash; RUB</h3>
+        <p class="pay-note">Direct card transfer in roubles.</p>
+        <p class="pay-value" id="v-card" data-raw="5536914160736611">5536 9141 6073 6611</p>
+        <div class="pay-actions">
+          <button class="pay-btn" data-copy="v-card">Copy card</button>
+          <span class="pay-ok">Copied</span>
+        </div>
+      </div>
+
+      <div class="pay-item">
         <h3>SBP &mdash; by phone number</h3>
         <p class="pay-note">Fast Payments System, T-Bank.</p>
         <p class="pay-value" id="v-sbp">+7 968 480 3298</p>
@@ -446,7 +456,7 @@
       <div class="pay-item">
         <h3>ACBA card &mdash; Armenia</h3>
         <p class="pay-note">Local transfer in drams.</p>
-        <p class="pay-value" id="v-acba">4355 0539 2707 8339</p>
+        <p class="pay-value" id="v-acba" data-raw="4355053927078339">4355 0539 2707 8339</p>
         <div class="pay-actions">
           <button class="pay-btn" data-copy="v-acba">Copy card</button>
           <span class="pay-ok">Copied</span>
@@ -489,7 +499,8 @@
       var el = document.getElementById(btn.getAttribute('data-copy'));
       if(!el) return;
       var ok = btn.parentNode.querySelector('.pay-ok');
-      navigator.clipboard.writeText(el.textContent.trim()).then(function(){
+      var text = el.getAttribute('data-raw') || el.textContent.trim();
+      navigator.clipboard.writeText(text).then(function(){
         if(ok){ ok.classList.add('on'); setTimeout(function(){ ok.classList.remove('on'); }, 1800); }
       }).catch(function(){});
     });
