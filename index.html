@@ -243,12 +243,12 @@
   .employee{ background:var(--paper); padding:26px; transition:background 0.25s ease; }
   .employee:hover{ background:var(--cream); }
   .employee-photo{
-    width:100%; aspect-ratio:696/875; background:var(--cream-warm);
+    width:100%; aspect-ratio:1/1; background:var(--cream-warm);
     display:flex; align-items:center; justify-content:center; margin-bottom:16px;
     font-family:'Instrument Serif',serif; font-size:36px; color:var(--ink-faint);
     overflow:hidden;
   }
-  .employee-photo img{ width:100%; height:100%; object-fit:cover; object-position:center center; display:block; }
+  .employee-photo img{ width:100%; height:100%; object-fit:cover; object-position:center 22%; display:block; }
   .employee-name{ font-size:16px; font-weight:500; }
   .employee-role{ font-size:13.5px; color:var(--yellow-ink); margin-top:4px; }
   .employee-duties{ list-style:none; margin:14px 0 0; padding:0; }
@@ -322,7 +322,7 @@
   .footer-logo svg{ width:100%; height:auto; display:block; }
 
   /* ============ ФОРМА ОТЗЫВА ============ */
-  .testimonial-form{ margin-top:clamp(36px,5vw,52px); border-top:1px solid rgba(244,234,222,0.16); padding-top:clamp(30px,4vw,42px); max-width:640px; }
+  .testimonial-form{ scroll-margin-top:90px; margin-top:clamp(36px,5vw,52px); border-top:1px solid rgba(244,234,222,0.16); padding-top:clamp(30px,4vw,42px); max-width:640px; }
   .testimonial-form h3{ font-size:26px; margin-bottom:6px; }
   .form-intro{ font-size:14.5px; color:rgba(244,234,222,0.6); margin:0 0 26px; }
   .form-duo{ display:grid; grid-template-columns:1fr; gap:18px; }
@@ -491,9 +491,13 @@
         <div class="employee-meta"><span>Employee ID</span><span>009</span></div>
       </div>
       <div class="employee">
-        <div class="employee-photo">SG</div>
+        <div class="employee-photo"><img src="glebashev.jpg" alt="Sergey Glebashev" loading="lazy"></div>
         <div class="employee-name">Sergey Glebashev</div>
-        <div class="employee-role">Position pending</div>
+        <div class="employee-role">Head of Abundance Department (HAD)</div>
+        <ul class="employee-duties">
+          <li>Exceeding authority</li>
+          <li>Capital multiplication</li>
+        </ul>
         <div class="employee-meta"><span>Employee ID</span><span>010</span></div>
       </div>
       <div class="employee">
@@ -608,7 +612,7 @@
       </div>
     </div>
 
-    <div class="testimonial-form reveal">
+    <div class="testimonial-form reveal" id="leave">
       <h3>Leave a Testimonial</h3>
       <p class="form-intro">Share your experience of working at PUSHKIN &amp; PARTNERS. Published immediately.</p>
       <div class="form-duo">
